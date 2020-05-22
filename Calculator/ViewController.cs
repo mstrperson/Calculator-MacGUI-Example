@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using AppKit;
 using Foundation;
 
@@ -9,33 +9,10 @@ namespace Calculator
     {
         public ViewController(IntPtr handle) : base(handle)
         {
+            operands = new List<double>();
         }
 
-        public double leftOperand
-        {
-            get;
-            protected set;
-        }
-        public double rightOperand
-        {
-            get;
-            protected set;
-        }
-
-        public Operation doThis
-        {
-            get;
-            protected set;
-        }
-
-        public enum Operation
-        {
-            Plus,
-            Minus,
-            Times,
-            Divide
-        }
-
+        List<double> operands;
 
         public override void ViewDidLoad()
         {
@@ -106,51 +83,74 @@ namespace Calculator
 
         partial void PlusClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
-            doThis = Operation.Plus;
-            OutputScreen.StringValue = "";
+            double ans = 0;
+            foreach(double op in operands)
+            {
+                ans += op;
+            }
+
+            operands.Clear();
+
+            OutputScreen.StringValue = Convert.ToString(ans);
         }
         partial void MinusClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
-            doThis = Operation.Minus;
-            OutputScreen.StringValue = "";
+            if(operands.Count > 1)
+            {
+                double ans = operands[0];
+                for(int i = 1; i < operands.Count; i++)
+                {
+                    ans -= operands[i];
+                }
+                OutputScreen.StringValue = Convert.ToString(ans);
+
+                operands.Clear();
+            }
+            else
+            {
+                double ans = 0;
+                foreach(double op in operands)
+                {
+                    ans -= op;
+                }
+                OutputScreen.StringValue = Convert.ToString(ans);
+                operands.Clear();
+            }
         }
         partial void TimesClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
-            doThis = Operation.Times;
-            OutputScreen.StringValue = "";
+            if (operands.Count > 0)
+            {
+                double ans = 1;
+                foreach (double op in operands)
+                {
+                    ans *= op;
+                }
+                operands.Clear();
+
+                OutputScreen.StringValue = Convert.ToString(ans);
+            }
         }
         partial void DivideClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
-            doThis = Operation.Divide;
-            OutputScreen.StringValue = "";
+            if (operands.Count > 1)
+            {
+                double ans = operands[0];
+                for (int i = 1; i < operands.Count; i++)
+                {
+                    ans /= operands[i];
+                }
+                operands.Clear();
+
+                OutputScreen.StringValue = Convert.ToString(ans);
+            }
         }
 
+        // This is the ENT key...
         partial void EqualsClick(NSObject sender)
         {
-            rightOperand = Convert.ToDouble(OutputScreen.StringValue);
-            double answer;
-            switch(doThis)
-            {
-                case Operation.Plus:
-                    answer = leftOperand + rightOperand;
-                    break;
-                case Operation.Minus:
-                    answer = leftOperand - rightOperand;
-                    break;
-                case Operation.Times:
-                    answer = leftOperand * rightOperand;
-                    break;
-                case Operation.Divide:
-                    answer = leftOperand / rightOperand;
-                    break;
-                default: answer = 0; break;
-            }
-
-            OutputScreen.StringValue = string.Format("{0}", answer);
+            operands.Add(Convert.ToDouble(OutputScreen.StringValue));
+            OutputScreen.StringValue = "";
         }
     }
 }
