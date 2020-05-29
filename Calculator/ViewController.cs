@@ -11,12 +11,19 @@ namespace Calculator
         {
         }
 
+        public double answer
+        {
+            get;
+            protected set;
+        }
+
+        // The first number entered (set by pressing an operation key)
         public double leftOperand
         {
             get;
             protected set;
         }
-        public double rightOperand
+        public double? rightOperand
         {
             get;
             protected set;
@@ -131,26 +138,38 @@ namespace Calculator
 
         partial void EqualsClick(NSObject sender)
         {
-            rightOperand = Convert.ToDouble(OutputScreen.StringValue);
-            double answer;
+            if (!rightOperand.HasValue)
+            {
+                rightOperand = Convert.ToDouble(OutputScreen.StringValue);
+            }
+
+            //double answer;
             switch(doThis)
             {
                 case Operation.Plus:
-                    answer = leftOperand + rightOperand;
+                    answer = leftOperand + rightOperand.Value;
                     break;
                 case Operation.Minus:
-                    answer = leftOperand - rightOperand;
+                    answer = leftOperand - rightOperand.Value;
                     break;
                 case Operation.Times:
-                    answer = leftOperand * rightOperand;
+                    answer = leftOperand * rightOperand.Value;
                     break;
                 case Operation.Divide:
-                    answer = leftOperand / rightOperand;
+                    answer = leftOperand / rightOperand.Value;
                     break;
                 default: answer = 0; break;
             }
-
+            leftOperand = answer;
             OutputScreen.StringValue = string.Format("{0}", answer);
+        }
+
+        partial void ClearClick(NSObject sender)
+        {
+            answer = default;
+            leftOperand = default;
+            rightOperand = null;
+            OutputScreen.StringValue = "";
         }
     }
 }

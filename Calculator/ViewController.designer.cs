@@ -15,6 +15,9 @@ namespace Calculator
 		[Outlet]
 		AppKit.NSTextField OutputScreen { get; set; }
 
+		[Action ("ClearClick:")]
+		partial void ClearClick (Foundation.NSObject sender);
+
 		[Action ("DecimalClick:")]
 		partial void DecimalClick (Foundation.NSObject sender);
 
