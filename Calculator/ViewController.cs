@@ -11,11 +11,15 @@ namespace Calculator
         {
         }
 
+        private string answerStr;
+
         public double answer
         {
             get;
             protected set;
         }
+
+        private string leftStr;
 
         // The first number entered (set by pressing an operation key)
         public double leftOperand
@@ -23,6 +27,9 @@ namespace Calculator
             get;
             protected set;
         }
+
+        private string rightStr;
+
         public double? rightOperand
         {
             get;
@@ -43,11 +50,28 @@ namespace Calculator
             Divide
         }
 
+        protected string Input;
+
+        protected string Output
+        {
+            get
+            {
+                return string.Format("{0}{1}{2}\t{3}",
+                    leftStr,
+                    Environment.NewLine,
+                    doThis == Operation.Plus ? "+" :
+                       doThis == Operation.Minus ? "-" :
+                         doThis == Operation.Times ? "*" :
+                           doThis == Operation.Divide ? "÷" : "",
+                    rightStr
+                    );
+            }
+        }
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
+            Input = leftStr;
             // Do any additional setup after loading the view.
         }
 
@@ -66,81 +90,98 @@ namespace Calculator
 
         partial void DecimalClick(NSObject sender)
         {
-            if(!OutputScreen.StringValue.Contains("."))
-                OutputScreen.StringValue += ".";
+            if(!Input.Contains("."))
+                Input += ".";
+
+            OutputScreen.StringValue = Output;
         }
 
         partial void OneClick(NSObject sender)
         {
-            OutputScreen.StringValue += "1";
+            Input += "1";
+            OutputScreen.StringValue = Output;
         }
         partial void TwoClick(NSObject sender)
         {
-            OutputScreen.StringValue += "2";
+            Input += "2";
+            OutputScreen.StringValue = Output;
         }
         partial void ThreeClick(NSObject sender)
         {
-            OutputScreen.StringValue += "3";
+            Input += "3";
+            OutputScreen.StringValue = Output;
         }
         partial void FourClick(NSObject sender)
         {
-            OutputScreen.StringValue += "4";
+            Input += "4";
+            OutputScreen.StringValue = Output;
         }
         partial void FiveClick(NSObject sender)
         {
-            OutputScreen.StringValue += "5";
+            Input += "5";
+            OutputScreen.StringValue = Output;
         }
         partial void SixClick(NSObject sender)
         {
-            OutputScreen.StringValue += "6";
+            Input += "6";
+            OutputScreen.StringValue = Output;
         }
         partial void SevenClick(NSObject sender)
         {
-            OutputScreen.StringValue += "7";
+            Input += "7";
+            OutputScreen.StringValue = Output;
         }
         partial void EightClick(NSObject sender)
         {
-            OutputScreen.StringValue += "8";
+            Input += "8";
+            OutputScreen.StringValue = Output;
         }
         partial void NineClick(NSObject sender)
         {
-            OutputScreen.StringValue += "9";
+            Input += "9";
+            OutputScreen.StringValue = Output;
         }
         partial void ZeroClick(NSObject sender)
         {
-            OutputScreen.StringValue += "0";
+            Input += "0";
+            OutputScreen.StringValue = Output;
         }
 
         partial void PlusClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
+            leftOperand = Convert.ToDouble(Input);
             doThis = Operation.Plus;
-            OutputScreen.StringValue = "";
+            Input = rightStr;
+            OutputScreen.StringValue = Output;
         }
         partial void MinusClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
+            leftOperand = Convert.ToDouble(Input);
             doThis = Operation.Minus;
-            OutputScreen.StringValue = "";
+
+            Input = rightStr;
+            OutputScreen.StringValue = Output;
         }
         partial void TimesClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
+            leftOperand = Convert.ToDouble(Input);
             doThis = Operation.Times;
-            OutputScreen.StringValue = "";
+            Input = rightStr;
+            OutputScreen.StringValue = Output;
         }
         partial void DivideClick(NSObject sender)
         {
-            leftOperand = Convert.ToDouble(OutputScreen.StringValue);
+            leftOperand = Convert.ToDouble(Input);
             doThis = Operation.Divide;
-            OutputScreen.StringValue = "";
+            Input = rightStr;
+            OutputScreen.StringValue = Output;
         }
 
         partial void EqualsClick(NSObject sender)
         {
             if (!rightOperand.HasValue)
             {
-                rightOperand = Convert.ToDouble(OutputScreen.StringValue);
+                rightOperand = Convert.ToDouble(rightStr);
             }
 
             //double answer;
@@ -161,7 +202,9 @@ namespace Calculator
                 default: answer = 0; break;
             }
             leftOperand = answer;
-            OutputScreen.StringValue = string.Format("{0}", answer);
+            answerStr = string.Format("{0}", answer);
+
+            OutputScreen.StringValue = string.Format("{0}{1}__________________________{1}{2}", Output, Environment.NewLine, answerStr);
         }
 
         partial void ClearClick(NSObject sender)
